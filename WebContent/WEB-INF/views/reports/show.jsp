@@ -35,11 +35,33 @@
                                 <fmt:formatDate value="${report.updated_at}" pattern="yyyy-MM-dd HH:mm:ss"/>
                             </td>
                         </tr>
+
+                        <tr>
+                            <th>いいね!</th>
+                            <td>
+                                <a href="<c:url value='/likes/show?id=${report.id}'/>"><c:out value="${report.like_count}"/></a>
+                            </td>
+                        </tr>
+
                     </tbody>
                 </table>
 
                 <c:if test="${sessionScope.login_employee.id == report.employee.id}">
                     <p><a href="<c:url value="/reports/edit?id=${report.id}"/>">この日報を編集する</a></p>
+                </c:if>
+
+                <c:if test="${sessionScope.login_employee.id != report.employee.id && my_like_count == 0}">
+                    <form method="POST" action="<c:url value='/likes/create'/>">
+                        <p>
+                        <input type="hidden" name="_token" value="${_token}" />
+                        <input type="hidden" name="report_id" value="${report.id}">
+                        <input type="submit" value="いいね!">
+                        </p>
+                    </form>
+                </c:if>
+
+                <c:if test="${sessionScope.login_employee.id != report.employee.id && my_like_count != 0}">
+                    <p>この日報にいいね!しました</p>
                 </c:if>
 
             </c:when>

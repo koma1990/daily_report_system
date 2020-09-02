@@ -62,6 +62,17 @@ public class Report {
     @Column(name = "updated_at", nullable = false)
     private Timestamp updated_at;
 
+    @Column(name = "like_count", nullable = false)
+    private Integer like_count = 0;
+
+
+    public Integer getLike_count() {
+        return like_count;
+    }
+
+    public void setLike_count(Integer like_count) {
+        this.like_count = like_count;
+    }
 
     public Integer getId() {
         return id;
