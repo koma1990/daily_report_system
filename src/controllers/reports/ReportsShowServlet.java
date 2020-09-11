@@ -44,10 +44,15 @@ public class ReportsShowServlet extends HttpServlet {
                                 .setParameter("employee", e)
                                 .getSingleResult();
 
+        long follow_count = em.createNamedQuery("getExistingFollowsCount", Long.class)
+                                .setParameter("follower", e)
+                                .setParameter("followee", r.getEmployee())
+                                .getSingleResult();
+
         em.close();
 
         request.setAttribute("my_like_count", my_like_count);
-
+        request.setAttribute("follow_count", follow_count);
         request.setAttribute("report", r);
         request.setAttribute("_token", request.getSession().getId());
 

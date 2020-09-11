@@ -15,7 +15,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-
 @Table (name = "reports")
 @NamedQueries({
     @NamedQuery(
@@ -34,6 +33,15 @@ import javax.persistence.Table;
             name = "getMyReportsCount",
             query = "SELECT COUNT(r) FROM Report AS r WHERE r.employee = :employee"
             ),
+    @NamedQuery(
+            name = "getMyFollowReports",
+            query = "SELECT r FROM Report AS r, Follow AS f WHERE f.follower =:employee AND r.employee = f.followee ORDER BY r.id DESC"
+            ),
+    @NamedQuery(
+            name = "getMyFollowReportsCount",
+            query = "SELECT COUNT(r) FROM Report AS r, Follow AS f WHERE f.follower =:employee AND r.employee = f.followee"
+
+            )
 })
 @Entity
 public class Report {

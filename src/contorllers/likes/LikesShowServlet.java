@@ -1,4 +1,4 @@
-package contorollers.likes;
+package contorllers.likes;
 
 import java.io.IOException;
 import java.util.List;

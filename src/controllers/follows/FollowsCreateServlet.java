@@ -1,4 +1,4 @@
-package contorollers.likes;
+package controllers.follows;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -11,21 +11,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Employee;
-import models.Like;
+import models.Follow;
 import models.Report;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class LikesCreateServlet
+ * Servlet implementation class FollowsCreateServlet
  */
-@WebServlet("/likes/create")
-public class LikesCreateServlet extends HttpServlet {
+@WebServlet("/follows/create")
+public class FollowsCreateServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LikesCreateServlet() {
+    public FollowsCreateServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,33 +35,25 @@ public class LikesCreateServlet extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String _token = (String)request.getParameter("_token");
-        if(_token != null && _token.equals(request.getSession().getId())){
-
+        if (_token != null && _token.equals(request.getSession().getId())){
             EntityManager em = DBUtil.createEntityManager();
 
+            Follow f = new Follow();
+            Report r = em.find(Report.class, Integer.parseInt(request.getParameter("report_id")));
 
-            //Likeテーブルにデータを登録する処理
-            Like l = new Like();
-            Report r = em.find(Report.class, Integer.valueOf(request.getParameter("report_id")));
-
-            l.setReport(r);
-            l.setEmployee((Employee)request.getSession().getAttribute("login_employee"));
+            f.setFollower((Employee)request.getSession().getAttribute("login_employee"));
+            f.setFollowee(r.getEmployee());
 
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            l.setCreated_at(currentTime);
-            l.setUpdated_at(currentTime);
 
-            //Reportテーブルのlike_countを＋1する処理
-            int i = r.getLike_count();
-            i++;
-            r.setLike_count(i);
+            f.setCreated_at(currentTime);
+            f.setUpdated_at(currentTime);
 
             em.getTransaction().begin();
-            em.persist(l);
+            em.persist(f);
             em.getTransaction().commit();
             em.close();
-
-            request.getSession().setAttribute("flush", r.getEmployee().getName()+"さんの日報にいいね!しました");
+            request.getSession().setAttribute("flush", r.getEmployee().getName()+"さんをフォローしました");
             response.sendRedirect(request.getContextPath() + "/reports/index");
 
         }

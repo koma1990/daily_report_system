@@ -9,6 +9,13 @@
             </div>
         </c:if>
         <h2>日報 一覧</h2>
+
+        <div class="checkbox">
+        <form method="GET" action ="<c:url value='/reports/index'/>">
+        <p><input type="checkbox" name="followFilter" value="1">フォロー中の日報のみを表示する   <input type="submit" value="表示"></p>
+        </form>
+        </div>
+
         <table id="report_list">
             <tbody>
                 <tr>

@@ -50,6 +50,29 @@
                     <p><a href="<c:url value="/reports/edit?id=${report.id}"/>">この日報を編集する</a></p>
                 </c:if>
 
+                <c:if test="${sessionScope.login_employee.id != report.employee.id}">
+                    <c:choose>
+                        <c:when test="${follow_count == 0 || follow_count == null}">
+                            <form method="POST" action="<c:url value='/follows/create'/>">
+                                <p>
+                                <input type="hidden" name="_token" value="${_token}" />
+                                <input type="hidden" name="report_id" value="${report.id}">
+                                <input type="submit" value="${report.employee.name}さんをフォローする">
+                                </p>
+                            </form>
+                        </c:when>
+                        <c:otherwise>
+                            <form method="POST" action="<c:url value='/follows/destroy'/>">
+                                <p>
+                                <input type="hidden" name="_token" value="${_token}" />
+                                <input type="hidden" name="report_id" value="${report.id}">
+                                <input type="submit" value="${report.employee.name}さんのフォローを解除">
+                                </p>
+                            </form>
+                        </c:otherwise>
+                    </c:choose>
+                </c:if>
+
                 <c:if test="${sessionScope.login_employee.id != report.employee.id && my_like_count == 0}">
                     <form method="POST" action="<c:url value='/likes/create'/>">
                         <p>
