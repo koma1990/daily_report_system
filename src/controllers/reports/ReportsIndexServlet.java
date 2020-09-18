@@ -36,14 +36,21 @@ public class ReportsIndexServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
 
-        int page;
+        int follow_check;
         try {
-            page = Integer.parseInt(request.getParameter("page"));
+        follow_check = Integer.parseInt(request.getParameter("follow_check"));
         } catch(Exception e){
-            page = 1;
+            follow_check = 0;
         }
 
-        if (request.getParameter("followFilter") != null){
+        if (follow_check == 1){
+
+            int page;
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+            } catch(Exception e){
+                page = 1;
+            }
 
             List<Report> reports = em.createNamedQuery("getMyFollowReports", Report.class)
                                      .setParameter("employee", (Employee)request.getSession().getAttribute("login_employee"))
@@ -57,8 +64,19 @@ public class ReportsIndexServlet extends HttpServlet {
 
             request.setAttribute("reports", reports);
             request.setAttribute("reports_count", reports_count);
+            request.setAttribute("follow_check", follow_check);
+            request.setAttribute("page", page);
 
         } else {
+
+            int page;
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+            } catch(Exception e){
+                page = 1;
+            }
+
+            follow_check = 0;
 
             List<Report> reports = em.createNamedQuery("getAllReports", Report.class)
                                  .setFirstResult(15 * (page - 1))
@@ -70,11 +88,12 @@ public class ReportsIndexServlet extends HttpServlet {
 
             request.setAttribute("reports", reports);
             request.setAttribute("reports_count", reports_count);
+            request.setAttribute("follow_check", follow_check);
+            request.setAttribute("page", page);
         }
 
         em.close();
 
-        request.setAttribute("page", page);
         if(request.getSession().getAttribute("flush") != null){
             request.setAttribute("flush", request.getSession().getAttribute("flush"));
             request.getSession().removeAttribute("flush");
